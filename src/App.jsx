@@ -8,8 +8,9 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            deadline: 'December 25, 2017',
-            newDeadline: ''
+            deadline: window.actualDeadline,
+            newDeadline: '',
+            clockStyle: false
         };
     }
 
@@ -17,14 +18,20 @@ class App extends React.Component {
         this.setState({deadline: this.state.newDeadline});
     }
 
+    changeClockStyle() {
+        const clockStyle = !this.state.clockStyle;
+        this.setState({clockStyle});
+    }
+
     render() {
         return (
                 <div className='App'>
                     <div className='App-title'> Countdown to {this.state.deadline} </div>
-                        <Clock deadline={this.state.deadline}/>
+                        <Clock deadline={this.state.deadline} clockStyle={this.state.clockStyle}/>
                         <Form inline>
                             <FormControl className="Deadline-input" placeholder='new date' onChange={event => this.setState({newDeadline: event.target.value})}/>
-                            <Button onClick={() => this.changeDeadline()}>Submit</Button>
+                            <Button onClick={() => this.changeDeadline()}>Submit</Button> &nbsp;
+                            <Button onClick={() => this.changeClockStyle()}>Change Clock</Button>
                         </Form>
                 </div>
         );

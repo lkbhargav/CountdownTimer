@@ -17,3 +17,18 @@
     font-size: 25px;
     margin: 5px;
 }
+
+.top, .bottom {
+    width: 200px;
+    height: 150px;
+    border: 20px solid black;
+}
+
+.spanStyles {
+      font-size: 75px;
+}
+
+/*
+<CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(1)} display="inline-block" dimensions="200,150" calculatorEffect="true" midLine="true" digitColor="255,128,25" linesOpacity="0.1" linesThickness="50" margin="40,25,40,25"/>
+{this.state.digitColor}
+*/
