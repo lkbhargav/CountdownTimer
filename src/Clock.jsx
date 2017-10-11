@@ -11,7 +11,9 @@ class Clock extends Component {
             minutes: 0,
             seconds: 0,
             customClock: false,
-            secondsColor: "black"
+            secondsColor: "black",
+            lastDay: false,
+            lastDayMessage: ""
         }
     }
 
@@ -44,6 +46,19 @@ class Clock extends Component {
         const hours = Math.floor((time/(1000*60*60) % 24));
         const days = Math.floor(time/(1000*60*60*24));
 
+        if(Date.parse(new Date()) > Date.parse(deadline) && (Date.parse(new Date()) - Date.parse(deadline)) < 86400000) {
+            const lastDay = true;
+            const lastDayMessage = "Today is the day you have been waiting for..!";
+            this.setState({lastDay, lastDayMessage});
+        } else if(Date.parse(new Date()) > Date.parse(deadline) && (Date.parse(new Date()) - Date.parse(deadline)) > 86400000) {
+            const lastDay = true;
+            const days = parseInt((Date.parse(new Date()) - Date.parse(deadline))/86400000);
+            const lastDayMessage = "It has been "+days+" days since the deadline has passed!";
+            this.setState({lastDay, lastDayMessage});
+        } else {
+            this.setState({lastDay: false});
+        }
+
         let secondsColor = "0,0,0";
         if(seconds <= 59 && seconds > 45) {
             secondsColor = "0,128,0"
@@ -63,21 +78,97 @@ class Clock extends Component {
     }
 
     render() {
-      if(this.state.customClock) {
+
+    const hour0 = <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(0)} midLine="true" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>;
+    const hour1 = <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(1)} midLine="true" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
+    const divider0 = <ClockDivider dimensions="10,10" blink="true" margin="0,5,10,5"/>;
+    const minutes0 = <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(0)} midLine="true" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>;
+    const minutes1 = <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(1)} midLine="true" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
+    const seconds0 = <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(0)} midLine="true" digitColor={this.state.secondsColor} tiltDigit="-5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,5,0,10"/>;
+    const seconds1 = <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(1)} midLine="true" digitColor={this.state.secondsColor} tiltDigit="5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
+
+    if(!this.state.lastDay) {
+      if(this.state.customClock && this.leading0(this.state.days).toString().length <= 2) {
           return (
                 <div>
                       <CreativeDigit num={this.leading0(this.state.days).toString().charAt(0)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
                       <CreativeDigit num={this.leading0(this.state.days).toString().charAt(1)} midLine="true" dimensions="50,35" margin="0,0,0,0" roundedCorners="25"/> &nbsp; <span className="spanStyles"> days </span> <br/>
-                      <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(0)} midLine="true" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>
-                      <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(1)} midLine="true" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>
-                      <ClockDivider dimensions="10,10" blink="true" margin="0,5,10,5"/>
-                      <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(0)} midLine="true" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>
-                      <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(1)} midLine="true" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>
-                      <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(0)} midLine="true" digitColor={this.state.secondsColor} tiltDigit="-5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,5,0,10"/>
-                      <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(1)} midLine="true" digitColor={this.state.secondsColor} tiltDigit="5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>
+                      {hour0}
+                      {hour1}
+                      {divider0}
+                      {minutes0}
+                      {minutes1}
+                      {seconds0}
+                      {seconds1}
                 </div>
           );
-        } else {
+        } else if(this.state.customClock && this.leading0(this.state.days).toString().length == 3) {
+            return (
+                  <div>
+                        <CreativeDigit num={this.leading0(this.state.days).toString().charAt(0)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                        <CreativeDigit num={this.leading0(this.state.days).toString().charAt(1)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                        <CreativeDigit num={this.leading0(this.state.days).toString().charAt(2)} midLine="true" dimensions="50,35" margin="0,0,0,0" roundedCorners="25"/> &nbsp; <span className="spanStyles"> days </span> <br/>
+                        {hour0}
+                        {hour1}
+                        {divider0}
+                        {minutes0}
+                        {minutes1}
+                        {seconds0}
+                        {seconds1}
+                    </div>
+            );
+          } else if(this.state.customClock && this.leading0(this.state.days).toString().length == 4) {
+              return (
+                    <div>
+                          <CreativeDigit num={this.leading0(this.state.days).toString().charAt(0)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                          <CreativeDigit num={this.leading0(this.state.days).toString().charAt(1)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                          <CreativeDigit num={this.leading0(this.state.days).toString().charAt(2)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                          <CreativeDigit num={this.leading0(this.state.days).toString().charAt(3)} midLine="true" dimensions="50,35" margin="0,0,0,0" roundedCorners="25"/> &nbsp; <span className="spanStyles"> days </span> <br/>
+                          {hour0}
+                          {hour1}
+                          {divider0}
+                          {minutes0}
+                          {minutes1}
+                          {seconds0}
+                          {seconds1}
+                      </div>
+              );
+            } else if(this.state.customClock && this.leading0(this.state.days).toString().length == 5) {
+                return (
+                      <div>
+                            <CreativeDigit num={this.leading0(this.state.days).toString().charAt(0)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                            <CreativeDigit num={this.leading0(this.state.days).toString().charAt(1)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                            <CreativeDigit num={this.leading0(this.state.days).toString().charAt(2)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                            <CreativeDigit num={this.leading0(this.state.days).toString().charAt(3)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                            <CreativeDigit num={this.leading0(this.state.days).toString().charAt(4)} midLine="true" dimensions="50,35" margin="0,0,0,0" roundedCorners="25"/> &nbsp; <span className="spanStyles"> days </span> <br/>
+                            {hour0}
+                            {hour1}
+                            {divider0}
+                            {minutes0}
+                            {minutes1}
+                            {seconds0}
+                            {seconds1}
+                      </div>
+                );
+              } else if(this.state.customClock && this.leading0(this.state.days).toString().length >= 6) {
+                  return (
+                        <div>
+                              <CreativeDigit num={this.leading0(this.state.days).toString().charAt(0)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                              <CreativeDigit num={this.leading0(this.state.days).toString().charAt(1)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                              <CreativeDigit num={this.leading0(this.state.days).toString().charAt(2)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                              <CreativeDigit num={this.leading0(this.state.days).toString().charAt(3)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                              <CreativeDigit num={this.leading0(this.state.days).toString().charAt(4)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                              <CreativeDigit num={this.leading0(this.state.days).toString().charAt(5)} midLine="true" dimensions="50,35" margin="0,0,0,0" roundedCorners="25"/> &nbsp; <span className="spanStyles"> days </span> <br/>
+                              {hour0}
+                              {hour1}
+                              {divider0}
+                              {minutes0}
+                              {minutes1}
+                              {seconds0}
+                              {seconds1}
+                        </div>
+                  );
+                } else {
           return (
                 <div>
                       <div className='Clock-days'>{this.leading0(this.state.days)} days </div>
@@ -87,6 +178,11 @@ class Clock extends Component {
                 </div>
           );
         }
+    } else {
+        return(
+            <div> {this.state.lastDayMessage} </div>
+        )
+    }
     }
 }
 

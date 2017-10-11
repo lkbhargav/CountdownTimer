@@ -8,7 +8,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            deadline: window.actualDeadline,
+            deadline: "October 11, 2017, 13:00:00",
             newDeadline: '',
             clockStyle: false
         };
