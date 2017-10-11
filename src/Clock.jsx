@@ -53,7 +53,9 @@ class Clock extends Component {
         } else if(Date.parse(new Date()) > Date.parse(deadline) && (Date.parse(new Date()) - Date.parse(deadline)) > 86400000) {
             const lastDay = true;
             const days = parseInt((Date.parse(new Date()) - Date.parse(deadline))/86400000);
-            const lastDayMessage = "It has been "+days+" days since the deadline has passed!";
+            const months = parseInt(days/30);
+            const years = parseInt(months/12);
+            const lastDayMessage = "It's been "+years+" years (or) "+months+" months (or) "+days+" days since the deadline has passed!";
             this.setState({lastDay, lastDayMessage});
         } else {
             this.setState({lastDay: false});
