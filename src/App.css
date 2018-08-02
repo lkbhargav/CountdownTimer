@@ -1,7 +1,7 @@
 .App {
     text-align: center;
     font-size: 35px;
-    margin-top: 20%;
+    margin-top: 12%;
 }
 
 .App-title {
@@ -26,6 +26,21 @@
 
 .spanStyles {
       font-size: 75px;
+}
+
+.newDeadlineText {
+  font-size: 25px;
+  color: gray;
+  font-style: italic;
+}
+
+.centerText {
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.divideUs {
+  margin-top: 10px;
 }
 
 /*

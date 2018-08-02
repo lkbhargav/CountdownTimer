@@ -14,7 +14,8 @@ class Clock extends Component {
             secondsColor: "black",
             lastDay: false,
             lastDayMessage: ""
-        }
+        };
+        this.interval;
     }
 
     componentWillMount() {
@@ -32,7 +33,7 @@ class Clock extends Component {
     }
 
     componentDidMount() {
-        setInterval(() => this.getTimeUntil(this.props.deadline), 1000);
+        this.interval = setInterval(() => this.getTimeUntil(this.props.deadline), 1000);
     }
 
     leading0(num) {
@@ -45,7 +46,6 @@ class Clock extends Component {
         const minutes = Math.floor((time/1000/60)%60);
         const hours = Math.floor((time/(1000*60*60) % 24));
         const days = Math.floor(time/(1000*60*60*24));
-
         if(Date.parse(new Date()) > Date.parse(deadline) && (Date.parse(new Date()) - Date.parse(deadline)) < 86400000) {
             const lastDay = true;
             const lastDayMessage = "Today is the day you have been waiting for..!";
@@ -59,42 +59,42 @@ class Clock extends Component {
             this.setState({lastDay, lastDayMessage});
         } else {
             this.setState({lastDay: false});
+            let secondsColor = "0,0,0";
+            if(seconds <= 59 && seconds > 45) {
+                secondsColor = "0,128,0"
+            } else if(seconds <= 45 && seconds > 30) {
+                secondsColor = "204,204,0";
+            } else if(seconds <= 30 && seconds > 15) {
+                secondsColor = "255,160,122";
+            } else if(seconds <= 15 && seconds > 0) {
+                secondsColor = "255,0,0";
+            } else if(seconds === 0) {
+                secondsColor = "0,0,0";
+            }
+
+            this.setState({secondsColor});
+
+            this.setState({days, hours, minutes, seconds});
         }
-
-        let secondsColor = "0,0,0";
-        if(seconds <= 59 && seconds > 45) {
-            secondsColor = "0,128,0"
-        } else if(seconds <= 45 && seconds > 30) {
-            secondsColor = "204,204,0";
-        } else if(seconds <= 30 && seconds > 15) {
-            secondsColor = "255,160,122";
-        } else if(seconds <= 15 && seconds > 0) {
-            secondsColor = "255,0,0";
-        } else if(seconds === 0) {
-            secondsColor = "0,0,0";
-        }
-
-        this.setState({secondsColor});
-
-        this.setState({days, hours, minutes, seconds});
     }
 
     render() {
 
-    const hour0 = <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(0)} midLine="true" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>;
-    const hour1 = <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(1)} midLine="true" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
-    const divider0 = <ClockDivider dimensions="10,10" blink="true" margin="0,5,10,5"/>;
-    const minutes0 = <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(0)} midLine="true" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>;
-    const minutes1 = <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(1)} midLine="true" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
-    const seconds0 = <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(0)} midLine="true" digitColor={this.state.secondsColor} tiltDigit="-5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,5,0,10"/>;
-    const seconds1 = <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(1)} midLine="true" digitColor={this.state.secondsColor} tiltDigit="5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
+    const hour0 = <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(0)} midLine="true" calculatorEffect="true" linesOpacity=".03" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>;
+    const hour1 = <CreativeDigit num={this.leading0(this.state.hours).toString().charAt(1)} midLine="true" calculatorEffect="true" linesOpacity=".03" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
+    const divider0 = <ClockDivider dimensions="10,10" blink="false" margin="0,5,10,5"/>;
+    const minutes0 = <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(0)} midLine="true" calculatorEffect="true" linesOpacity=".03" tiltDigit="5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,5,0,0"/>;
+    const minutes1 = <CreativeDigit num={this.leading0(this.state.minutes).toString().charAt(1)} midLine="true" calculatorEffect="true" linesOpacity=".03" tiltDigit="-5" dimensions="35,25" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
+    const seconds0 = <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(0)} midLine="true" digitColor={this.state.secondsColor} calculatorEffect="true" linesOpacity=".03" tiltDigit="-5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,5,0,10"/>;
+    const seconds1 = <CreativeDigit num={this.leading0(this.state.seconds).toString().charAt(1)} midLine="true" digitColor={this.state.secondsColor} calculatorEffect="true" linesOpacity=".03" tiltDigit="5" dimensions="22,15" roundedCorners="25" linesThickness="5" margin="0,0,0,0"/>;
 
     if(!this.state.lastDay) {
       if(this.state.customClock && this.leading0(this.state.days).toString().length <= 2) {
           return (
                 <div>
-                      <CreativeDigit num={this.leading0(this.state.days).toString().charAt(0)} midLine="true" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
-                      <CreativeDigit num={this.leading0(this.state.days).toString().charAt(1)} midLine="true" dimensions="50,35" margin="0,0,0,0" roundedCorners="25"/> &nbsp; <span className="spanStyles"> days </span> <br/>
+                      <CreativeDigit num={this.leading0(this.state.days).toString().charAt(0)} midLine="true" calculatorEffect="true" linesOpacity=".03" dimensions="50,35" margin="0,5,0,0" roundedCorners="25"/>
+                      <CreativeDigit num={this.leading0(this.state.days).toString().charAt(1)} midLine="true" calculatorEffect="true" linesOpacity=".03" dimensions="50,35" margin="0,0,0,0" roundedCorners="25"/> &nbsp; <span className="spanStyles"> days </span>
+                      <div className="divideUs"> </div>
                       {hour0}
                       {hour1}
                       {divider0}
